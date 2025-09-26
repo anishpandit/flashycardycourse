@@ -1,0 +1,119 @@
+# Cursor Rules for FlashyCardyCourse
+
+## 🚨 CRITICAL SECURITY REQUIREMENT
+**ALL AUTHENTICATION IS HANDLED BY CLERK. USERS MUST ONLY ACCESS THEIR OWN DATA.**
+
+## Rule Organization
+
+This project uses organized development rules stored in `.cursor/rules/`. Each file focuses on a specific aspect of development:
+
+### 📋 Rule Categories
+
+1. **🔐 [Authentication & Security](.cursor/rules/authentication-security.md)**
+   - Clerk authentication patterns
+   - Data access security controls
+   - API route protection templates
+
+2. **🗄️ [Database Operations](.cursor/rules/database.md)**
+   - Drizzle ORM with user-scoped queries
+   - Service layer patterns
+   - Type safety requirements
+
+3. **🛡️ [API Routes & Data Access](.cursor/rules/api-routes.md)**
+   - Secure API route templates
+   - Input validation schemas
+   - Error handling patterns
+
+4. **🎨 [Components & UI](.cursor/rules/components-ui.md)**
+   - Authentication-aware components
+   - Form patterns with validation
+   - Accessibility guidelines
+
+5. **📁 [Code Organization](.cursor/rules/code-organization.md)**
+   - Project structure standards
+   - Service layer organization
+   - Development workflow
+
+### 🔗 Quick Access
+- **Full Documentation**: [.cursor/rules/README.md](.cursor/rules/README.md)
+- **All Rules**: See `.cursor/rules/` directory
+
+## ⚡ Quick Reference
+
+### Required Server Component Pattern (Data Fetching)
+```typescript
+// app/dashboard/page.tsx
+import { auth } from '@clerk/nextjs/server';
+
+export default async function DashboardPage() {
+  const { userId } = await auth();
+  if (!userId) redirect('/sign-in');
+  
+  const decks = await deckService.getUserDecks(userId);
+  return <DeckList decks={decks} />;
+}
+```
+
+### Required Server Action Pattern (Mutations)
+```typescript
+// lib/actions/deck-actions.ts
+'use server';
+import { auth } from '@clerk/nextjs/server';
+import { z } from 'zod';
+
+const createDeckSchema = z.object({
+  name: z.string().min(1).max(255),
+  description: z.string().optional(),
+});
+
+export async function createDeckAction(input: z.infer<typeof createDeckSchema>) {
+  const { userId } = await auth();
+  if (!userId) throw new Error('Unauthorized');
+  
+  const validatedData = createDeckSchema.parse(input);
+  return await deckService.createDeck(userId, validatedData);
+}
+```
+
+### Required Database Pattern
+```typescript
+// ✅ ALWAYS filter by authenticated user
+const userDecks = await db
+  .select()
+  .from(decksTable)
+  .where(eq(decksTable.userId, userId));
+
+// ❌ NEVER query without user context
+const allDecks = await db.select().from(decksTable); // FORBIDDEN
+```
+
+### Current Schema
+- `decksTable`: (id, userId, name, description, createdAt, updatedAt)
+- `cardsTable`: (id, deckId, front, back, createdAt, updatedAt)
+
+## 🛡️ Security Checklist
+
+Every implementation MUST:
+- [ ] Authenticate user with Clerk
+- [ ] Use server components for data fetching
+- [ ] Use server actions for mutations
+- [ ] Validate all inputs with Zod schemas
+- [ ] Scope all database queries to authenticated userId
+- [ ] Never expose other users' data
+- [ ] Handle errors without leaking sensitive info
+
+## 🚫 Prohibited Practices
+
+- ❌ Trusting client-provided user IDs
+- ❌ Database queries without userId filtering
+- ❌ Bypassing authentication checks
+- ❌ Raw SQL or other ORMs (use Drizzle only)
+- ❌ Exposing sensitive information in errors
+- ❌ Client-side data fetching (use server components)
+- ❌ FormData types in server actions (use typed parameters)
+- ❌ Unvalidated inputs to server actions (use Zod)
+- ❌ Direct API routes for mutations (use server actions)
+
+---
+
+**For detailed implementation patterns, always reference the specific rule files in `.cursor/rules/`.**

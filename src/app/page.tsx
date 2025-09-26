@@ -1,103 +1,100 @@
 import Image from "next/image";
+import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 
 export default function Home() {
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <div className="font-sans min-h-screen p-8">
+      <main className="max-w-4xl mx-auto">
+        <SignedOut>
+          <div className="text-center space-y-8 py-16">
+            <div className="space-y-4">
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-400 to-purple-600 bg-clip-text text-transparent">
+                Welcome to Flashy Cardy Course
+              </h1>
+              <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+                Master any subject with our interactive flashcard learning platform. 
+                Sign up to create, share, and study with powerful spaced repetition techniques.
+              </p>
+            </div>
+            
+            <div className="grid md:grid-cols-3 gap-8 mt-16">
+              <div className="bg-gray-800/50 p-6 rounded-lg border border-gray-700">
+                <div className="text-3xl mb-4">🧠</div>
+                <h3 className="text-lg font-semibold mb-2">Smart Learning</h3>
+                <p className="text-gray-400">AI-powered spaced repetition helps you learn more efficiently</p>
+              </div>
+              <div className="bg-gray-800/50 p-6 rounded-lg border border-gray-700">
+                <div className="text-3xl mb-4">📚</div>
+                <h3 className="text-lg font-semibold mb-2">Rich Content</h3>
+                <p className="text-gray-400">Create flashcards with text, images, and multimedia</p>
+              </div>
+              <div className="bg-gray-800/50 p-6 rounded-lg border border-gray-700">
+                <div className="text-3xl mb-4">👥</div>
+                <h3 className="text-lg font-semibold mb-2">Collaborative</h3>
+                <p className="text-gray-400">Share decks and study together with your peers</p>
+              </div>
+            </div>
+            
+            <div className="pt-8">
+              <p className="text-gray-400 mb-4">Ready to supercharge your learning?</p>
+              <p className="text-sm text-gray-500">Sign up or sign in using the buttons in the header above</p>
+            </div>
+          </div>
+        </SignedOut>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
+        <SignedIn>
+          <div className="space-y-8 py-8">
+            <div className="text-center space-y-4">
+              <h1 className="text-3xl font-bold">Welcome back!</h1>
+              <p className="text-gray-300">Ready to continue your learning journey?</p>
+            </div>
+            
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="bg-blue-600/20 border border-blue-500/30 p-6 rounded-lg">
+                <h3 className="text-lg font-semibold mb-2">Create New Deck</h3>
+                <p className="text-gray-300 mb-4">Start building your next flashcard collection</p>
+                <button className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg transition-colors">
+                  Get Started
+                </button>
+              </div>
+              
+              <div className="bg-green-600/20 border border-green-500/30 p-6 rounded-lg">
+                <h3 className="text-lg font-semibold mb-2">Continue Studying</h3>
+                <p className="text-gray-300 mb-4">Review your existing flashcard decks</p>
+                <button className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg transition-colors">
+                  Study Now
+                </button>
+              </div>
+              
+              <div className="bg-purple-600/20 border border-purple-500/30 p-6 rounded-lg">
+                <h3 className="text-lg font-semibold mb-2">Browse Library</h3>
+                <p className="text-gray-300 mb-4">Discover decks shared by the community</p>
+                <button className="bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-lg transition-colors">
+                  Explore
+                </button>
+              </div>
+            </div>
+            
+            <div className="bg-gray-800/50 p-6 rounded-lg border border-gray-700">
+              <h3 className="text-xl font-semibold mb-4">Your Progress Today</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-blue-400">0</div>
+                  <div className="text-sm text-gray-400">Cards Studied</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-green-400">0</div>
+                  <div className="text-sm text-gray-400">Correct Answers</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-purple-400">0</div>
+                  <div className="text-sm text-gray-400">Study Streak</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </SignedIn>
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
     </div>
   );
 }
