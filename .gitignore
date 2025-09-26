@@ -42,3 +42,10 @@ next-env.d.ts
 
 # clerk configuration (can include secrets)
 /.clerk/
+
+# SSH keys
+id_ed25519*
+*.pem
+anish
+anish.pub
+
