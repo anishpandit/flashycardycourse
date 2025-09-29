@@ -2,38 +2,42 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { deleteDeckAction } from '@/lib/actions/deck-actions';
-import { AlertTriangle } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 interface DeleteDeckDialogProps {
-  deck: {
-    id: number;
-    name: string;
-  };
-  onCancel: () => void;
+  deckId: number;
+  deckName: string;
+  onDelete?: () => void;
 }
 
-export function DeleteDeckDialog({ deck, onCancel }: DeleteDeckDialogProps) {
+export function DeleteDeckDialog({ deckId, deckName, onDelete }: DeleteDeckDialogProps) {
+  const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
   const handleDelete = async () => {
+    console.log('Attempting to delete deck:', deckId);
     setIsLoading(true);
     setError(null);
 
     try {
-      const result = await deleteDeckAction({ id: deck.id });
+      const result = await deleteDeckAction({ id: deckId });
+      console.log('Delete result:', result);
       
       if (result.success) {
-        // Redirect to dashboard after successful deletion
-        router.push('/dashboard');
+        setIsOpen(false);
+        onDelete?.();
+        // Refresh the page to show updated deck list
+        window.location.reload();
       } else {
         setError(result.error || 'Failed to delete deck');
       }
     } catch (err) {
+      console.error('Delete error:', err);
       setError('An unexpected error occurred');
     } finally {
       setIsLoading(false);
@@ -41,49 +45,53 @@ export function DeleteDeckDialog({ deck, onCancel }: DeleteDeckDialogProps) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-destructive/10 rounded-full flex items-center justify-center">
-              <AlertTriangle className="w-4 h-4 text-destructive" />
-            </div>
-            <div>
-              <CardTitle>Delete Deck</CardTitle>
-              <CardDescription>This action cannot be undone</CardDescription>
-            </div>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <DialogTrigger asChild>
+        <Button 
+          variant="outline" 
+          size="sm"
+          className="text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('Delete button clicked for deck:', deckId);
+            setIsOpen(true);
+          }}
+        >
+          <Trash2 className="h-4 w-4" />
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Delete Deck</DialogTitle>
+          <DialogDescription>
+            Are you sure you want to delete "{deckName}"? This action cannot be undone and will also delete all cards in this deck.
+          </DialogDescription>
+        </DialogHeader>
+        
+        {error && (
+          <div className="text-sm text-red-500">
+            {error}
           </div>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <p className="text-sm">
-            Are you sure you want to delete <strong>"{deck.name}"</strong>? 
-            This will permanently delete the deck and all its cards.
-          </p>
+        )}
 
-          {error && (
-            <div className="text-sm text-red-500">
-              {error}
-            </div>
-          )}
-
-          <div className="flex gap-2 justify-end">
-            <Button 
-              variant="outline" 
-              onClick={onCancel}
-              disabled={isLoading}
-            >
-              Cancel
-            </Button>
-            <Button 
-              variant="destructive" 
-              onClick={handleDelete}
-              disabled={isLoading}
-            >
-              {isLoading ? 'Deleting...' : 'Delete Deck'}
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+        <DialogFooter>
+          <Button 
+            variant="outline" 
+            onClick={() => setIsOpen(false)}
+            disabled={isLoading}
+          >
+            Cancel
+          </Button>
+          <Button 
+            variant="destructive" 
+            onClick={handleDelete}
+            disabled={isLoading}
+          >
+            {isLoading ? 'Deleting...' : 'Delete Deck'}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }

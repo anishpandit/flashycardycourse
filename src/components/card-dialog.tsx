@@ -11,13 +11,15 @@ interface CardDialogProps {
     back: string;
   };
   onClose: () => void;
+  onSuccess?: () => void;
 }
 
-export function CardDialog({ deckId, card, onClose }: CardDialogProps) {
+export function CardDialog({ deckId, card, onClose, onSuccess }: CardDialogProps) {
   const isEditing = !!card;
 
   const handleSuccess = () => {
     onClose();
+    onSuccess?.();
     // The page will revalidate automatically due to server action revalidatePath
   };
 

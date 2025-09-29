@@ -84,7 +84,9 @@ export async function deleteDeckAction(input: z.infer<typeof deleteDeckSchema>) 
     
     revalidatePath('/dashboard');
     revalidatePath(`/decks/${validatedData.id}`);
-    return { success: true };
+    
+    // Redirect to dashboard after successful deletion
+    redirect('/dashboard');
   } catch (error) {
     if (error instanceof z.ZodError) {
       return { success: false, error: 'Invalid input data' };

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Edit, Trash2 } from 'lucide-react';
 import { DeckManagementDialog } from './deck-management-dialog';
-import { DeleteDeckDialog } from './delete-deck-dialog';
+import { DeleteDeckDetailDialog } from './delete-deck-detail-dialog';
 
 interface DeckActionsProps {
   deck: {
@@ -54,7 +54,7 @@ export function DeckActions({ deck, cards }: DeckActionsProps) {
       )}
 
       {showDeleteDialog && (
-        <DeleteDeckDialog 
+        <DeleteDeckDetailDialog 
           deck={deck}
           onCancel={() => setShowDeleteDialog(false)}
         />

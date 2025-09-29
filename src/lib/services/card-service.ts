@@ -21,14 +21,16 @@ export class CardService {
       ));
     
     if (!deck.length) {
-      throw new Error('Deck not found or access denied');
+      // Return empty array instead of throwing error
+      // The deck page will handle the 404 case
+      return [];
     }
 
     return await db
       .select()
       .from(cardsTable)
       .where(eq(cardsTable.deckId, deckId))
-      .orderBy(cardsTable.createdAt);
+      .orderBy(desc(cardsTable.createdAt));
   }
 
   /**
