@@ -1,6 +1,6 @@
 import { drizzle } from 'drizzle-orm/neon-http';
 import { eq, and, desc } from 'drizzle-orm';
-import { decksTable, cardsTable } from '@/db/schema';
+import { decksTable } from '@/db/schema';
 import { neon } from '@neondatabase/serverless';
 
 const sql = neon(process.env.DATABASE_URL!);
@@ -83,6 +83,7 @@ export class DeckService {
 
   /**
    * Get all cards for a specific deck (ensures user owns the deck)
+   * @deprecated Use cardService.getDeckCards instead
    */
   async getDeckCards(userId: string, deckId: number) {
     // First verify the user owns the deck
@@ -91,11 +92,9 @@ export class DeckService {
       throw new Error('Deck not found or access denied');
     }
 
-    return await db
-      .select()
-      .from(cardsTable)
-      .where(eq(cardsTable.deckId, deckId))
-      .orderBy(cardsTable.createdAt);
+    // Import here to avoid circular dependency
+    const { cardService } = await import('./card-service');
+    return await cardService.getDeckCards(userId, deckId);
   }
 }
 

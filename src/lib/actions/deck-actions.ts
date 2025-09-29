@@ -58,6 +58,7 @@ export async function updateDeckAction(input: z.infer<typeof updateDeckSchema>) 
     }
     
     revalidatePath('/dashboard');
+    revalidatePath(`/decks/${id}`);
     return { success: true, deck };
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -82,6 +83,7 @@ export async function deleteDeckAction(input: z.infer<typeof deleteDeckSchema>) 
     }
     
     revalidatePath('/dashboard');
+    revalidatePath(`/decks/${validatedData.id}`);
     return { success: true };
   } catch (error) {
     if (error instanceof z.ZodError) {
